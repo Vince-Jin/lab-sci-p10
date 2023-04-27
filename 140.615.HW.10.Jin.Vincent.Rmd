@@ -1,0 +1,25 @@
+---
+title: "140.615.HW.10.Jin.Vincent"
+author: "Vincent Jin"
+date: "2023-04-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Homework 10
+## vincent Jin
+
+# 1.
+Do certain genotypes affect cholesterol levels? The object cholesterol in the SPH.140.615 package and contains the  following fields: chol is the serum total cholesterol (mg/dl), APOE are the most common apolipoprotein E genotypes (2=e2/e3, 4=e3/e3, 5=e3/e4), and rs174548 is a candidate SNP near 61.3Mb on chromosome 11, reported in dominant coding (0 is C/C, 1 is C/G or G/G). The main scientific questions are whether rs174548 and APOE are associated with cholesterol levels, and whether the effect of APOE on cholesterol levels depend on rs174548. Plot and analyze the data, check your model assumptions, and state your conclusions.
+
+``` {r}
+library(SPH.140.615)
+chol <- cholesterol
+stripchart(split(jitter(chol$chol, factor = 2), list(chol$APOE, chol$rs174548)), ylab="response", pch=1, 
+           vertical=TRUE, xlim=c(0.5,6.5))
+interaction.plot(lard.dat$sex, lard.dat$lard, lard.dat$rsp, lty=1, col=c("blue","red"), lwd=2)
+summary(aov(chol ~ APOE * rs174548, data = chol))
+```
