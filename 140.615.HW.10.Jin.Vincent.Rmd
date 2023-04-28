@@ -17,9 +17,92 @@ Do certain genotypes affect cholesterol levels? The object cholesterol in the SP
 
 ``` {r}
 library(SPH.140.615)
-chol <- cholesterol
+chol <- SPH.140.615::cholesterol
 stripchart(split(jitter(chol$chol, factor = 2), list(chol$APOE, chol$rs174548)), ylab="response", pch=1, 
            vertical=TRUE, xlim=c(0.5,6.5))
-interaction.plot(lard.dat$sex, lard.dat$lard, lard.dat$rsp, lty=1, col=c("blue","red"), lwd=2)
-summary(aov(chol ~ APOE * rs174548, data = chol))
+interaction.plot(chol$APOE, chol$rs174548, chol$chol, lty=1, col=c("blue","red"), lwd=2)
+chol.aov <- aov(chol ~ APOE * rs174548, data = chol)
+summary(chol.aov)
+```
+
+``` {r}
+par(las = 1)
+stripchart(chol.aov$residuals ~ chol$APOE,
+method="jitter", pch=1, ylab="APOE", xlab="residuals (Cholesterol)", jitter=0.2, cex.axis = 0.7)
+abline(h=1:3, lty=2, col="gray")
+abline(v=0, lty=2, col="red")
+
+par(las=1)
+hist(chol.aov$residuals, breaks=30, yaxt="n", ylab="", xlab="Residuals", main="Cholesterol")
+qqnorm(chol.aov$residuals, main="Cholesterol")
+qqline(chol.aov$residuals, col="blue", lty=2, lwd=1)
+
+par(las=1)
+plot(chol.aov$fitted, chol.aov$residuals,
+pch=1, xlab="fitted values (Cholesterol)",ylab="residuals (Cholesterol)")
+abline(h=0, lty=2, col="red")
+
+
+```
+
+***Answer***
+
+Both rs174548 and APOE are significantly associated with cholesterol levels, but the effect of APOE on cholesterol levels does not depend on rs174748.
+
+
+# 2.
+Researchers put diamondback rattlesnakes in a “rattlebox”, a box with a lid that would slide open and shut every 5 minutes. At first, the snake would rattle its tail each time the box opened. After a while, the snake would become habituated to the box opening and stop rattling its tail. They counted the number of box openings until a snake stopped rattling; fewer box openings means the snake was more quickly habituated. They repeated this experiment on each of six snakes on four successive days. Here are the average number of box openings for the four days (1 – 4):
+$$\begin{matrix}
+1 & 2 & 3 & 4 \\
+63.33 & 47.00 & 34.50 & 25.33
+\end{matrix}$$
+Here are the average number of box openings for the six snakes (A – F):
+$$\begin{matrix}
+A & B & C & D & E & F \\
+53.75 & 50.00 & 56.25 & 36.75 & 30.75 & 27.75
+\end{matrix}$$
+
+We want to analyze the data using a 2-way analysis of variance (without replicates), treating both Day and Snake as random effects. We are particularly interested whether there are differences between days. The error sum of squares for the ANOVA table are 7346.
+
+## (a)
+Derive the ANOVA table and precisely state your conclusions.
+
+``` {r}
+day_mean <- c(63.33, 47.00, 34.50, 25.33)
+snake_mean <- c(53.75, 50.00, 56.25, 36.75, 30.75, 27.75)
+overall_mean <- mean(day_mean)
+r <- 4
+c <- 6
+n <- 24 * 60 / 5
+br <- c * sum((day_mean - overall_mean) ^ 2)
+cr <- r * sum((snake_mean - overall_mean) ^ 2)
+```
+
+```{r}
+rowers
+plot(rowers$height,rowers$weight)
+```
+
+```{r}
+cor(rowers$height, rowers$weight)
+```
+
+## (a) Fit the model and provide estimates of $\beta_0$, $\beta_1$, and $\sigma$.
+```{r}
+p4 <- lm(log10(response)~concentration, data = copper)
+summary(p4)
+```
+
+```{r}
+confint(p4)
+```
+
+## (c) Assess the appropriateness of the model.
+```{r}
+fitted(p4)
+residuals(p4)
+qqnorm(p4$residuals, main="")
+qqline(p4$residuals, col="blue", lty=2)
+plot(p4$fitted, p4$residuals, pch=1, xlab="fitted values", ylab="residuals")
+abline(h=0, col="blue", lty=2)
 ```
